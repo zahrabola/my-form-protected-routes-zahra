@@ -1,25 +1,29 @@
 ///https://www.youtube.com/watch?v=X3qyxo_UTR4&list=PL0Zuz27SZ-6PRCpm9clX0WiBEMB70FWwd&index=2
-import React, { useRef, useState, useEffect, useContext } from "react";
-import AuthContext from "../Context/AuthProvider";
-//import axios from "../api/axios"; //axios section
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-
+import React, { useRef, useState, useEffect } from "react";
+///import AuthContext from "../Context/AuthProvider";
+import axios from "../api/axios"; //axios section
+import useAuth from "../Hooks/useAuth";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const LOGIN_URL = "/auth"; //use with axios
 
 const Login = () => {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth;
 
   const userRef = useRef(); ///when for user input focus
   const errorRef = useRef(); /// error reference accesability
 
+  const navigate = useNavigate(); //navigate
+  const location = useLocation(); //location
+  const from = location.state?.from?.pathname || "/";
+
   const [user, setUser] = useState(""); //tied to user input
   const [password, setPassword] = useState(""); //tied to password input
   const [errorMsg, setErrorMsg] = useState(""); //if error
-  const [success, setSuccess] = useState(false); // if succesfull
+  ///const [success, setSuccess] = useState(false); // if succesfull
 
-/// displaying userName
-  const [headingText, setHeading] = useState("!");
+  /// displaying userName
+  ///const [headingText, setHeading] = useState("!");
 
   ////setting the focus when  the component loads
   useEffect(() => {
@@ -32,23 +36,22 @@ const Login = () => {
   }, [user, password]);
 
   ///handle submit without backend
-
+  /*
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(user, password);
     setUser("");
     setPassword("");
-setSuccess(true); 
-
-  };
-
-
-  //// displaying User Name 
-  function handleClick() {
+    setSuccess(true);
+    //display Name
     setHeading(" " + user + "!");
-  }
+  };
+*/
+  //// displaying User Name
+  /*  function handleClick() {
+    setHeading(" " + user + "!");
+  }*/
 
-  /*
   ///with axios handle submit - node.js
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -75,35 +78,35 @@ setSuccess(true);
 
       setUser("");
       setPassword("");
-      setSuccess(true);
-    } catch (error) {
-      if(!error?.response){
-        setErrorMsg('no server response')
-      } else if (error.response?.status === 400){
-        setErrorMsg('Missing Username or Password')
-      } else if (error.response?.status === 401) {
-        setErrorMsg('unauthorised')
-      } else {
-        setErrorMsg('login Failed')
-      }
-errorMsg.current.focus()
+      //setSuccess(true);
+      navigate(from, { replace: true });
 
+    } catch (error) {
+      if (!error?.response) {
+        setErrorMsg("no server response");
+      } else if (error.response?.status === 400) {
+        setErrorMsg("Missing Username or Password");
+      } else if (error.response?.status === 401) {
+        setErrorMsg("unauthorised");
+      } else {
+        setErrorMsg("login Failed");
+      }
+      errorMsg.current.focus();
     }
   };
-*/
+
   return (
     <>
-      {success ? (
+   {  /* {success ? (
         <section>
           <h1>You are logged in!</h1>
           <br />
           <p>
-          Welcome, {headingText}! <br/>
-          <Link to="/">Home</Link>
-    
+            Welcome, {headingText}! <br />
+            <Link to="/">Home</Link>
           </p>
         </section>
-      ) : (
+      ) : ( */}
         <section>
           <p ref={errorRef} className={errorMsg ? "errorMsg" : "offscreen"}>
             {" "}
@@ -121,7 +124,7 @@ errorMsg.current.focus()
               required
               onChange={(event) => setUser(event.target.value)}
             />
-          
+
             <label htmlFor="password">Password</label>
             <input
               type="password"
@@ -131,7 +134,7 @@ errorMsg.current.focus()
               required
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button  onClick={handleClick} >Sign In</button>
+            <button>Sign In</button>
           </form>
           <p>
             Need an Account?
@@ -142,11 +145,11 @@ errorMsg.current.focus()
             </span>
           </p>
         </section>
-      )}
+    { /* } )} */}
     </>
   );
 };
 
 export default Login;
 ////https://codesandbox.io/p/sandbox/get-input-form-value-in-react-773y1?file=%2Fsrc%2Fcomponents%2FApp.jsx  - helpful
-//https://codesandbox.io/p/sandbox/react-forms-multiple-inputs-rwyml 
+//https://codesandbox.io/p/sandbox/react-forms-multiple-inputs-rwyml
