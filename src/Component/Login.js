@@ -1,7 +1,9 @@
 ///https://www.youtube.com/watch?v=X3qyxo_UTR4&list=PL0Zuz27SZ-6PRCpm9clX0WiBEMB70FWwd&index=2
 import React, { useRef, useState, useEffect, useContext } from "react";
 import AuthContext from "../Context/AuthProvider";
-import axios from "../api/axios"; //axios section
+//import axios from "../api/axios"; //axios section
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
 
 const LOGIN_URL = "/auth"; //use with axios
 
@@ -15,6 +17,9 @@ const Login = () => {
   const [password, setPassword] = useState(""); //tied to password input
   const [errorMsg, setErrorMsg] = useState(""); //if error
   const [success, setSuccess] = useState(false); // if succesfull
+
+/// displaying userName
+  const [headingText, setHeading] = useState("!");
 
   ////setting the focus when  the component loads
   useEffect(() => {
@@ -33,8 +38,15 @@ const Login = () => {
     console.log(user, password);
     setUser("");
     setPassword("");
-    setSuccess(true);
+setSuccess(true); 
+
   };
+
+
+  //// displaying User Name 
+  function handleClick() {
+    setHeading(" " + user + "!");
+  }
 
   /*
   ///with axios handle submit - node.js
@@ -86,7 +98,9 @@ errorMsg.current.focus()
           <h1>You are logged in!</h1>
           <br />
           <p>
-            <a href="#">Go to HomePage</a>
+          Welcome, {headingText}! <br/>
+          <Link to="/">Home</Link>
+    
           </p>
         </section>
       ) : (
@@ -107,6 +121,7 @@ errorMsg.current.focus()
               required
               onChange={(event) => setUser(event.target.value)}
             />
+          
             <label htmlFor="password">Password</label>
             <input
               type="password"
@@ -116,14 +131,14 @@ errorMsg.current.focus()
               required
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button>Sign In</button>
+            <button  onClick={handleClick} >Sign In</button>
           </form>
           <p>
             Need an Account?
             <br />
             <span className="line">
               {/*put router link here - lead back to Registration form*/}
-              <a href="#">Sign Up</a>
+              <Link to="/register">Sign Up</Link>
             </span>
           </p>
         </section>
@@ -133,3 +148,5 @@ errorMsg.current.focus()
 };
 
 export default Login;
+////https://codesandbox.io/p/sandbox/get-input-form-value-in-react-773y1?file=%2Fsrc%2Fcomponents%2FApp.jsx  - helpful
+//https://codesandbox.io/p/sandbox/react-forms-multiple-inputs-rwyml 
